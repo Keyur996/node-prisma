@@ -1,5 +1,4 @@
-import prisma from "../../../prisma/prisma-connect";
-import { Post } from "./post.model";
+import prisma from "./../../prisma/prisma-connect";
 
 export const getAllPosts = (query?: any) => {
     try {
