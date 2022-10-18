@@ -25,7 +25,7 @@ export const errorHandler = (
     res: Response,
     _next: NextFunction
 ) => {
-    console.log("Error Inside errorHandler", err.code);
+    console.log("Error Inside errorHandler", err);
     if (err && err.name === "UnauthorizedError") {
         return res.status(401).json({
             status: "error",

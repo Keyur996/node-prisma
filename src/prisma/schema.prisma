@@ -19,13 +19,30 @@ model User {
   @@unique([email, id])
 }
 
+model Category {
+  id    Int                 @id @default(autoincrement())
+  name  String              @unique
+  posts CategoriesOnPosts[]
+}
+
 model Post {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  title     String   @db.VarChar(200)
+  id        Int                 @id @default(autoincrement())
+  createdAt DateTime            @default(now())
+  updatedAt DateTime            @updatedAt
+  title     String              @db.VarChar(200)
   content   String?
-  published Boolean  @default(false)
-  author    User     @relation(fields: [authorId], references: [id])
+  published Boolean             @default(false)
+  categories  CategoriesOnPosts[]
+  author    User                @relation(fields: [authorId], references: [id])
   authorId  Int
+}
+
+model CategoriesOnPosts {
+  post       Post     @relation(fields: [postId], references: [id])
+  postId     Int
+  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId Int 
+  assignedAt DateTime @default(now())
+
+  @@id([postId, categoryId])
 }

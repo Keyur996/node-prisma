@@ -1,10 +1,12 @@
 import prisma from "./../../prisma/prisma-connect";
+import { ICategory } from "./post.model";
 
 export const getAllPosts = (query?: any) => {
     try {
         return prisma.post.findMany({
             include: {
-                author: true
+                author: true,
+                categories: true
             }
         });
     } catch (err) {
@@ -13,10 +15,61 @@ export const getAllPosts = (query?: any) => {
     }
 };
 
-export const createPost = (post: any) => {
+const buildORCategories = (_categories: string[]) => {
+    const orCond: any[] = [];
+    _categories.forEach((_category: string) => {
+        orCond.push({ name: _category });
+    });
+
+    return orCond;
+};
+
+const getExistingCategories = (_categories: string[]) => {
+    return prisma.category.findMany({
+        where: {
+            OR: buildORCategories(_categories)
+        }
+    });
+};
+
+const getCategoriesQuery = async (post: any) => {
+    let category = null;
+    const existingCategories = await getExistingCategories(
+        post.categories || []
+    );
+
+    return (post.categories || []).map((_cat: string) => {
+        category = existingCategories.find((_c: ICategory) => _c.name === _cat);
+        if (category) {
+            return {
+                category: {
+                    connect: {
+                        id: category.id
+                    }
+                }
+            };
+        } else {
+            return {
+                category: {
+                    create: {
+                        name: _cat
+                    }
+                }
+            };
+        }
+    });
+};
+
+export const createPost = async (post: any) => {
     try {
+        const categories = await getCategoriesQuery(post);
         return prisma.post.create({
-            data: post
+            data: {
+                ...post,
+                categories: {
+                    create: categories
+                }
+            }
         });
     } catch (err) {
         console.log("Error inside createPost", err);
@@ -24,13 +77,17 @@ export const createPost = (post: any) => {
     }
 };
 
-export const updatePost = (id: number | undefined, post: any) => {
+export const updatePost = async (id: number | undefined, post: any) => {
     try {
+        const categories = await getCategoriesQuery(post);
         return prisma.post.update({
             where: { id: id },
             data: {
                 ...post,
-                updatedAt: new Date()
+                updatedAt: new Date(),
+                categories: {
+                    create: categories
+                }
             }
         });
     } catch (err) {
@@ -53,7 +110,13 @@ export const deletePost = (id: number | undefined) => {
 export const postById = (id: number | undefined) => {
     try {
         return prisma.post.findFirst({
-            where: { id: id }
+            where: {
+                id: id
+            },
+            include: {
+                author: true,
+                categories: true
+            }
         });
     } catch (err) {
         console.log("Error inside getPostById", err);
