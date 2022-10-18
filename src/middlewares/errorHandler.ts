@@ -7,13 +7,11 @@ export const errorHandler = (
     res: Response,
     _next: NextFunction
 ) => {
-    // @ts-ignore
     if (err && err.name === "UnauthorizedError") {
         return res.status(401).json({
             status: "error",
             message: "missing authorization credentials"
         });
-        // @ts-ignore
     } else if (
         err &&
         err.constructor.name === "PrismaClientKnownRequestError"
@@ -24,7 +22,6 @@ export const errorHandler = (
             message: err?.meta.cause
         });
     } else if (err && err.statusCode) {
-        // @ts-ignore
         res.status(err.statusCode).json({
             success: false,
             message: err.message
