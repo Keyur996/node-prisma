@@ -7,6 +7,18 @@ generator client {
   provider = "prisma-client-js"
 }
 
+model User {
+  id          Int       @id @default(autoincrement())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  email       String    @db.VarChar(20) @unique
+  firstName   String    
+  lastName    String
+  posts       Post[]
+
+  @@unique([email, id])
+}
+
 model Post {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
@@ -14,4 +26,6 @@ model Post {
   title     String   @db.VarChar(200)
   content   String?
   published Boolean  @default(false)
+  author    User     @relation(fields: [authorId], references: [id])
+  authorId  Int
 }

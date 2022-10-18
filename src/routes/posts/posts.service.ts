@@ -2,7 +2,11 @@ import prisma from "./../../prisma/prisma-connect";
 
 export const getAllPosts = (query?: any) => {
     try {
-        return prisma.post.findMany({});
+        return prisma.post.findMany({
+            include: {
+                author: true
+            }
+        });
     } catch (err) {
         console.log("Error inside getAllPosts", err);
         throw err;
