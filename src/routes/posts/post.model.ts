@@ -1,4 +1,5 @@
 import { IUser } from "../users/user.model";
+import * as Yup from "yup";
 
 export interface ICategory {
     id?: number;
@@ -7,7 +8,7 @@ export interface ICategory {
 }
 
 export interface IPost {
-    id?: string | number;
+    id?: number;
     title: string;
     content: string;
     categories: ICategory[];
@@ -17,3 +18,15 @@ export interface IPost {
     createdAt?: Date;
     updatedAt?: Date;
 }
+
+export const postSchema = Yup.object()
+    .shape({
+        id: Yup.number().optional(),
+        title: Yup.string().required(),
+        content: Yup.string().required(),
+        categories: Yup.array().of(Yup.string()).required(),
+        published: Yup.boolean().default(false),
+        authorId: Yup.number().required(),
+        updatedAt: Yup.date().optional()
+    })
+    .required();

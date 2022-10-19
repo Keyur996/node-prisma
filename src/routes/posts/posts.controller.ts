@@ -7,6 +7,22 @@ import {
     deletePost,
     postById
 } from "./posts.service";
+import { postSchema } from "./post.model";
+
+export const validatePost = async (
+    req: Request,
+    _res: Response,
+    next: NextFunction
+) => {
+    try {
+        const parsedPost = await postSchema.validate(req.body);
+        req.body = parsedPost;
+        next();
+    } catch (err) {
+        console.log("Error inside validate Post", err);
+        next(err);
+    }
+};
 
 export const getPosts = async (
     _req: Request,

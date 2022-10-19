@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { validatePost } from "./posts.controller";
 import {
     getPosts,
     create,
@@ -9,7 +10,7 @@ import {
 
 const postsRouter = Router();
 
-postsRouter.route("").get(getPosts).post(create);
+postsRouter.route("").get(getPosts).post(validatePost, create);
 
 postsRouter.route("/:id").get(getPostById).put(update).delete(deleteP);
 
