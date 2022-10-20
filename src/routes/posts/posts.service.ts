@@ -15,19 +15,10 @@ export const getAllPosts = (query?: any) => {
     }
 };
 
-const buildORCategories = (_categories: string[]) => {
-    const orCond: any[] = [];
-    _categories.forEach((_category: string) => {
-        orCond.push({ name: _category });
-    });
-
-    return orCond;
-};
-
 const getExistingCategories = (_categories: string[]) => {
     return prisma.category.findMany({
         where: {
-            OR: buildORCategories(_categories)
+            name: { in: _categories }
         }
     });
 };
