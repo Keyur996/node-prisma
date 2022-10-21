@@ -6,6 +6,10 @@ export interface ErrorType extends Error {
     stack?: string;
     message: string;
 }
+
+export interface IErrorResponse extends Error {
+    statusCode: number;
+}
 export class ErrorResponse extends Error {
     statusCode: number;
     constructor(message: string, statusCode: number) {

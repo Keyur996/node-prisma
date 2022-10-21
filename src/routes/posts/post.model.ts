@@ -1,5 +1,5 @@
 import { IUser } from "../users/user.model";
-import * as Yup from "yup";
+import Joi from "joi";
 
 export interface ICategory {
     id?: number;
@@ -19,14 +19,13 @@ export interface IPost {
     updatedAt?: Date;
 }
 
-export const postSchema = Yup.object()
-    .shape({
-        id: Yup.number().optional(),
-        title: Yup.string().required(),
-        content: Yup.string().required(),
-        categories: Yup.array().of(Yup.string()).required(),
-        published: Yup.boolean().default(false),
-        authorId: Yup.number().required(),
-        updatedAt: Yup.date().optional()
-    })
-    .required();
+export const postSchema: Joi.ObjectSchema<IPost> = Joi.object({
+    id: Joi.number().optional(),
+    title: Joi.string().required(),
+    content: Joi.string().required(),
+    categories: Joi.array().items(Joi.string()).required(),
+    published: Joi.boolean().default(false),
+    authorId: Joi.number().required(),
+    updatedAt: Joi.date().optional(),
+    createdAt: Joi.date().optional()
+}).required();

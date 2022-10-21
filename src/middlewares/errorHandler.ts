@@ -1,23 +1,9 @@
-import {
-    PrismaClientInitializationError,
-    PrismaClientKnownRequestError,
-    PrismaClientRustPanicError,
-    PrismaClientUnknownRequestError,
-    PrismaClientValidationError
-} from "@prisma/client/runtime";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
 import { NextFunction, Request, Response } from "express";
-import { ErrorResponse, ErrorType } from "../utils/error";
+import { ValidationError } from "joi";
+import { IErrorResponse, ErrorType } from "../utils/error";
 
-export type ApiError =
-    | ErrorType &
-          (
-              | ErrorResponse
-              | PrismaClientInitializationError
-              | PrismaClientKnownRequestError
-              | PrismaClientRustPanicError
-              | PrismaClientValidationError
-              | PrismaClientUnknownRequestError
-          );
+export type ApiError = IErrorResponse & ValidationError & ErrorType;
 
 export const errorHandler = (
     err: ApiError,
@@ -26,18 +12,18 @@ export const errorHandler = (
     _next: NextFunction
 ) => {
     console.log("Error Inside errorHandler", err);
-    if (err && err.name === "UnauthorizedError") {
-        return res.status(401).json({
-            status: "error",
-            message: "missing authorization credentials"
-        });
-    } else if (err && err instanceof PrismaClientKnownRequestError) {
+    if (err && err instanceof PrismaClientKnownRequestError) {
         return res.status(404).json({
             success: false,
             message: err?.meta?.cause || "Something Went Wrong"
         });
-    } else if (err && (err as ErrorResponse).statusCode) {
-        res.status((err as ErrorResponse).statusCode).json({
+    } else if (err.name === "ValidationError") {
+        res.status(422).json({
+            success: false,
+            message: err.message
+        });
+    } else if (err && err.statusCode) {
+        res.status(err.statusCode).json({
             success: false,
             message: err.message
         });

@@ -9,19 +9,17 @@ import {
 } from "./posts.service";
 import { postSchema } from "./post.model";
 
-export const validatePost = async (
+export const validatePost = (
     req: Request,
     _res: Response,
     next: NextFunction
 ) => {
-    try {
-        const parsedPost = await postSchema.validate(req.body);
-        req.body = parsedPost;
-        next();
-    } catch (err) {
-        console.log("Error inside validate Post", err);
-        next(err);
+    const parsedPost = postSchema.validate(req.body, { abortEarly: false });
+    if (!parsedPost.error) {
+        req.body = parsedPost.value;
+        return next();
     }
+    throw parsedPost.error;
 };
 
 export const getPosts = async (
