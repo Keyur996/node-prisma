@@ -1,5 +1,5 @@
-import { IUser } from "../users/user.model";
-import Joi from "joi";
+import { IUser } from '../users/user.model';
+import Joi from 'joi';
 
 export interface ICategory {
     id?: number;
@@ -15,6 +15,8 @@ export interface IPost {
     published?: boolean;
     author: IUser;
     authorId: number;
+    is_deleted?: boolean;
+    deleted_at?: Date;
     createdAt?: Date;
     updatedAt?: Date;
 }
@@ -27,5 +29,7 @@ export const postSchema: Joi.ObjectSchema<IPost> = Joi.object({
     published: Joi.boolean().default(false),
     authorId: Joi.number().required(),
     updatedAt: Joi.date().optional(),
-    createdAt: Joi.date().optional()
+    createdAt: Joi.date().optional(),
+    is_deleted: Joi.date(),
+    deleted_at: Joi.date()
 }).required();

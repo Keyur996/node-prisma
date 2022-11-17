@@ -1,22 +1,22 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
-}
-
 model User {
-  id          Int       @id @default(autoincrement())
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  email       String    @db.VarChar(20) @unique
-  firstName   String    
-  lastName    String
-  posts       Post[]
-
-  @@unique([email, id])
+  id         Int       @id @default(autoincrement())
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  email      String    @unique @db.VarChar(20)
+  firstName  String
+  lastName   String
+  deleted_at DateTime?
+  is_deleted Boolean   @default(false)
+  posts      Post[]
 }
 
 model Category {
@@ -26,23 +26,25 @@ model Category {
 }
 
 model Post {
-  id        Int                 @id @default(autoincrement())
-  createdAt DateTime            @default(now())
-  updatedAt DateTime            @updatedAt
-  title     String              @db.VarChar(200)
-  content   String?
-  published Boolean             @default(false)
-  categories  CategoriesOnPosts[]
-  author    User                @relation(fields: [authorId], references: [id])
-  authorId  Int
+  id         Int                 @id @default(autoincrement())
+  createdAt  DateTime            @default(now())
+  updatedAt  DateTime            @updatedAt
+  title      String              @db.VarChar(200)
+  content    String?
+  published  Boolean             @default(false)
+  authorId   Int
+  deleted_at DateTime?
+  is_deleted Boolean             @default(false)
+  author     User                @relation(fields: [authorId], references: [id])
+  categories CategoriesOnPosts[]
 }
 
 model CategoriesOnPosts {
-  post       Post     @relation(fields: [postId], references: [id])
   postId     Int
-  category   Category @relation(fields: [categoryId], references: [id])
-  categoryId Int 
+  categoryId Int
   assignedAt DateTime @default(now())
+  category   Category @relation(fields: [categoryId], references: [id])
+  post       Post     @relation(fields: [postId], references: [id])
 
   @@id([postId, categoryId])
 }

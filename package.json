@@ -24,6 +24,9 @@
         "morgan": "^1.10.0",
         "xss-clean": "^0.1.1"
     },
+    "prisma": {
+        "schema": "./src/prisma/schema.prisma"
+    },
     "devDependencies": {
         "@types/express": "^4.17.14",
         "@types/hpp": "^0.2.2",

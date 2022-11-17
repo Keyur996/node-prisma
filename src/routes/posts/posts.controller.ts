@@ -1,13 +1,13 @@
-import { NextFunction, Request, Response } from "express";
-import { ErrorResponse } from "../../utils/error";
+import { NextFunction, Request, Response } from 'express';
+import { ErrorResponse } from '../../utils/error';
 import {
     getAllPosts,
     createPost,
     updatePost,
     deletePost,
     postById
-} from "./posts.service";
-import { postSchema } from "./post.model";
+} from './posts.service';
+import { postSchema } from './post.model';
 
 export const validatePost = (
     req: Request,
@@ -31,12 +31,12 @@ export const getPosts = async (
         const posts = await getAllPosts({});
 
         if (!posts) {
-            return next(new ErrorResponse("No posts Found", 404));
+            return next(new ErrorResponse('No posts Found', 404));
         }
 
         return res.status(200).json({
             success: true,
-            message: "Posts fetched Successfully!!",
+            message: 'Posts fetched Successfully!!',
             posts
         });
     } catch (err) {
@@ -51,10 +51,9 @@ export const create = async (
 ) => {
     try {
         const post = await createPost(req.body);
-
         return res.status(200).json({
             success: true,
-            message: "Posts created Successfully!!",
+            message: 'Posts created Successfully!!',
             post
         });
     } catch (err) {
@@ -71,12 +70,12 @@ export const update = async (
         const post = await updatePost(+req.params?.id, req.body);
 
         if (!post) {
-            return next(new ErrorResponse("No posts Found", 404));
+            return next(new ErrorResponse('No posts Found', 404));
         }
 
         return res.status(200).json({
             success: true,
-            message: "Posts updated Successfully!!",
+            message: 'Posts updated Successfully!!',
             post
         });
     } catch (err) {
@@ -93,12 +92,12 @@ export const deleteP = async (
         const post = await deletePost(+req.params?.id);
 
         if (!post) {
-            return next(new ErrorResponse("No posts Found", 404));
+            return next(new ErrorResponse('No posts Found', 404));
         }
 
         return res.status(200).json({
             success: true,
-            message: "Posts deleted Successfully!!",
+            message: 'Posts deleted Successfully!!',
             post
         });
     } catch (err) {
@@ -115,12 +114,12 @@ export const getPostById = async (
         const post = await postById(+req.params?.id);
 
         if (!post) {
-            return next(new ErrorResponse("No posts Found", 404));
+            return next(new ErrorResponse('No posts Found', 404));
         }
 
         return res.status(200).json({
             success: true,
-            message: "Posts fetched Successfully!!",
+            message: 'Posts fetched Successfully!!',
             post
         });
     } catch (err) {
