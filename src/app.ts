@@ -1,11 +1,11 @@
-import express, { Express } from "express";
-import { routes } from "./routes";
-import morgan from "morgan";
-import hpp from "hpp";
-import helmet from "helmet";
+import express, { Express } from 'express';
+import { routes } from './routes';
+import morgan from 'morgan';
+import hpp from 'hpp';
+import helmet from 'helmet';
 // @ts-ignore
-import xss from "xss-clean";
-import { errorHandler } from "./middlewares/errorHandler";
+import xss from 'xss-clean';
+import { errorHandler } from './middlewares/errorHandler';
 
 const app: Express = express();
 
@@ -13,7 +13,7 @@ app.use(express.json());
 
 app.use(express.urlencoded({ extended: true }));
 
-app.use(morgan("dev"));
+app.use(morgan('dev'));
 
 app.use(hpp());
 

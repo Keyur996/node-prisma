@@ -9,6 +9,7 @@ datasource db {
 
 model User {
   id         Int       @id @default(autoincrement())
+  uuid       String    @unique @default(uuid())
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
   email      String    @unique @db.VarChar(20)
@@ -32,10 +33,10 @@ model Post {
   title      String              @db.VarChar(200)
   content    String?
   published  Boolean             @default(false)
-  authorId   Int
+  authorId   String              @db.Text
   deleted_at DateTime?
   is_deleted Boolean             @default(false)
-  author     User                @relation(fields: [authorId], references: [id])
+  author     User                @relation(fields: [authorId], references: [uuid])
   categories CategoriesOnPosts[]
 }
 
